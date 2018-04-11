@@ -8,7 +8,11 @@
 %%====================================================================
 
 run() ->
-    io:format("digraph Erlang {~n"),
+    run("erlang_processes.dot").
+
+run(OutputFile) ->
+    {ok, F} = file:open(OutputFile, write),
+    io:format(F, "digraph Erlang {~n", []),
     Processes = processes(),
     ProcessInfo = [{erlang:process_info(Pid), Pid} || Pid <- Processes],
     lists:foreach(fun({PI, Pid}) ->
@@ -25,10 +29,8 @@ run() ->
                                           noop;
                                       Ancestors ->
                                           Parent = hd(Ancestors),
-                                          io:format("\"~p\" -> \"~p\"~n", [Parent, Name])
+                                          io:format(F, "\"~p\" -> \"~p\"~n", [Parent, Name])
                                   end
                           end
-                          %% Leader = proplists:get_value(group_leader, PI),
-                          %% Links = proplists:get_value(links, PI),
                   end, ProcessInfo),
-    io:format("}~n").
+    io:format(F, "}~n", []).
