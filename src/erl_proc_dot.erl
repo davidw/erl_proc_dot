@@ -12,7 +12,7 @@ run() ->
 
 run(OutputFile) ->
     {ok, F} = file:open(OutputFile, write),
-    io:format(F, "digraph Erlang {~n", []),
+    io:format(F, "digraph Erlang {~nrankdir=LR", []),
     Processes = processes(),
     ProcessInfo = [{erlang:process_info(Pid), Pid} || Pid <- Processes],
     lists:foreach(fun({PI, Pid}) ->
